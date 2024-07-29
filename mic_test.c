@@ -3,6 +3,11 @@ Use freq bins in FFT to provide divisions of the different freq in
 the wave spectrum
 Using around 25 freq bins, each representing the amplitude at that region
 of freq
+
+Created by Seungyun YEOM
+WIT LAB @ KAIST
+
+Adapted from https://forum.pjrc.com/index.php?threads/teensyduino-1-52-beta-3.60599/page-3#post-238070
 */
 
 #include <Audio.h>

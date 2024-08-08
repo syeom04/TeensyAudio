@@ -27,6 +27,11 @@ class FFTVisualizer:
         # Create a line plot item
         self.line = self.plot.plot(pen='b')
         
+        # Fix the y-axis range
+        self.y_min = 0
+        self.y_max = 1
+        self.plot.setYRange(self.y_min, self.y_max)
+        
         # Serial configuration
         ports = serial.tools.list_ports.comports()
         portList = [str(onePort) for onePort in ports]
@@ -88,7 +93,6 @@ class FFTVisualizer:
                 # Perform FFT and update plot
                 magnitude = np.abs(np.fft.fft(self.fft_values)[:self.fft_size//2])
                 self.line.setData(self.frequencies, magnitude)
-                self.plot.setYRange(0, np.max(magnitude) * 1.1)
     
     def run(self):
         QtWidgets.QApplication.instance().exec()

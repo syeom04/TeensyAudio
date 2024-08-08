@@ -3,6 +3,7 @@
 **By Seungyun Yeom, Lab Intern, WIT LAB @ KAIST**
 
 This repository contains my research work and projects related to audio analysis, with potential applications in wearable devices.
+[Used Teensy 4.1, SPH0645 Mic]
 https://docs.google.com/presentation/d/1-e8CvU8t24MpcVqNmlJDZ_smbfroyqGtAjFgcp6NYI4/edit#slide=id.p
 
 ## License

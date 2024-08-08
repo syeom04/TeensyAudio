@@ -10,6 +10,7 @@ for onePort in ports:
     print("Current port: " + str(onePort))
     portList.append(str(onePort))
 print(portList)
+print(str(portList[0]).split(" ")[0])
 val = input("Select the current port (ENTER INTEGER ONLY)\n")
 for x in range(len(portList)):
     if portList[x].startswith("COM" + str(val)):

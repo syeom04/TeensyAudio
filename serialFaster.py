@@ -39,7 +39,7 @@ class FFTVisualizer:
             self.serialInst = serial.Serial(port=current_port, baudrate=9600)
         else:
             # When there are multiple ports, ask the user to select one
-            val = input("Select the current port (ENTER INTEGER ONLY)\n")
+            val = input("Select the current port\nFor example, if the port is COM5, simply enter '5'\n")
             portVar = "COM" + str(val)
             print("You have selected " + str(portVar))
             self.serialInst = serial.Serial(port=portVar, baudrate=9600)
@@ -55,7 +55,7 @@ class FFTVisualizer:
         # Set up the timer
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update_plot)
-        self.timer.start(30)  # Update every 30 ms
+        self.timer.start(1)  # Update every 30 ms
         
         # Show the window
         self.win.show()

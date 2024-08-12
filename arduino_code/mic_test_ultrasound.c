@@ -8,6 +8,8 @@ Created by Seungyun YEOM
 WIT LAB @ KAIST
 
 Adapted from https://forum.pjrc.com/index.php?threads/teensyduino-1-52-beta-3.60599/page-3#post-238070
+
+For changing the sampling rate: https://forum.pjrc.com/index.php?threads/change-sample-rate-for-teensy-4-vs-teensy-3.57283/
 */
 
 #include <Audio.h>

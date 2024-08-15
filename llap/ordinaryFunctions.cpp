@@ -1,5 +1,7 @@
 #include "ordinaryFunctions.h"
 #include <cmath> // for atan2, fabs, M_PI
+#include <algorithm>
+#include <limits>
 
 // Define a structure for complex numbers with the real and imag components
 struct Complex {

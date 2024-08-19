@@ -269,39 +269,23 @@ Float32 RangeFinder::CalculateDistance() {
 }
 
 void RangeFinder::RemoveDC() {
-    int f, i;
-    float tempdata[4096], tempdata2[4096], temp_val;
-    float vsum, dsum, max_valr, min_valr, max_vali, min_vali;
 
     if (mDecsize > 4096)
         return;
 
     // 'Levd' algorithm to calculate the DC value;
-    for (f = 0; f < mNumFreqs; f++) {
-        vsum = 0;
-        dsum = 0;
+    for (int f = 0; f < mNumFreqs; f++) {
+        float vsum = 0;
+        float dsum = 0;
 
         // real part
-        max_valr = *std::max_element(mBaseBandReal[f], mBaseBandReal[f] + mDecsize);
-        min_valr = *std::min_element(mBaseBandReal[f], mBaseBandReal[f] + mDecsize);
+        float max_valr = findMax(mBaseBandReal[f], mDecsize);
+        float min_valr = findMin(mBaseBandReal[f], mDecsize)
+        varAndSum(mBaseBandReal[f], mDecsize, vsum, dsum);
 
-        // get variance, first remove the first value
-        temp_val = -mBaseBandReal[f][0];
-        std::transform(mBaseBandReal[f], mBaseBandReal[f] + mDecsize, tempdata, [=](float x) { return x + temp_val; });
-        dsum += fabs(std::accumulate(tempdata, tempdata + mDecsize, 0.0f) / mDecsize);
-        std::transform(tempdata, tempdata + mDecsize, tempdata2, [](float x) { return x * x; });
-        vsum += fabs(std::accumulate(tempdata2, tempdata2 + mDecsize, 0.0f) / mDecsize);
-
-        // imag part
-        max_vali = *std::max_element(mBaseBandImage[f], mBaseBandImage[f] + mDecsize);
-        min_vali = *std::min_element(mBaseBandImage[f], mBaseBandImage[f] + mDecsize);
-
-        // get variance, first remove the first value
-        temp_val = -mBaseBandImage[f][0];
-        std::transform(mBaseBandImage[f], mBaseBandImage[f] + mDecsize, tempdata, [=](float x) { return x + temp_val; });
-        dsum += fabs(std::accumulate(tempdata, tempdata + mDecsize, 0.0f) / mDecsize);
-        std::transform(tempdata, tempdata + mDecsize, tempdata2, [](float x) { return x * x; });
-        vsum += fabs(std::accumulate(tempdata2, tempdata2 + mDecsize, 0.0f) / mDecsize);
+        float max_vali = findMax(mBaseBandImage[f], mDecsize);
+        float min_vali = findMin(mBaseBandImage[f], mDecsize);
+        varAndSum(mBaseBandImage[f], mDecsize, vsum, dsum);
 
         mFreqPower[f] = vsum + dsum * dsum;
 
@@ -377,64 +361,64 @@ void RangeFinder::GetBaseBand() {
 
     for (i = 0; i < mNumFreqs; i++) { // mNumFreqs
         // Multiply the cos
-        std::transform(mFRecDataBuffer, mFRecDataBuffer + mCurRecPos, mCosBuffer[i] + mCurProcPos, mTempBuffer, std::multiplies<Float32>());
+        transformMultiply(mFRecDataBuffer, mCosBuffer[i] + mCurProcPos, mTempBuffer, mCurRecPos);
 
         cid = 0;
         // Sum CIC_DEC points of data, put into CICbuffer
-        std::memmove(mCICBuffer[i][0][cid], mCICBuffer[i][0][cid] + mLastCICPos, CIC_DELAY * sizeof(Float32));
+        memMove(mCICBuffer[i][0][cid], mCICBuffer[i][0][cid] + mLastCICPos, CIC_DELAY);
         index = CIC_DELAY;
         for (UInt32 k = 0; k < mCurRecPos; k += CIC_DEC) {
-            mCICBuffer[i][0][cid][index] = std::accumulate(mTempBuffer + k, mTempBuffer + k + CIC_DEC, 0.0f);
+            mCICBuffer[i][0][cid][index] = accumulate(mTempBuffer + k, CIC_DEC);
             index++;
         }
 
         // Prepare CIC first level
-        std::memmove(mCICBuffer[i][1][cid], mCICBuffer[i][1][cid] + mLastCICPos, CIC_DELAY * sizeof(Float32));
+        MemMove(mCICBuffer[i][1][cid], mCICBuffer[i][1][cid] + mLastCICPos, CIC_DELAY);
         // Sliding window sum
-        std::partial_sum(mCICBuffer[i][0][cid] + CIC_DELAY, mCICBuffer[i][0][cid] + CIC_DELAY + decsize, mCICBuffer[i][1][cid] + CIC_DELAY);
+        PartialSum(mCICBuffer[i][0][cid] + CIC_DELAY, mCICBuffer[i][1][cid] + CIC_DELAY, decsize);
 
         // Prepare CIC second level
-        std::memmove(mCICBuffer[i][2][cid], mCICBuffer[i][2][cid] + mLastCICPos, CIC_DELAY * sizeof(Float32));
+        MemMove(mCICBuffer[i][2][cid], mCICBuffer[i][2][cid] + mLastCICPos, CIC_DELAY);
         // Sliding window sum
-        std::partial_sum(mCICBuffer[i][1][cid] + CIC_DELAY, mCICBuffer[i][1][cid] + CIC_DELAY + decsize, mCICBuffer[i][2][cid] + CIC_DELAY);
+        PartialSum(mCICBuffer[i][1][cid] + CIC_DELAY, mCICBuffer[i][2][cid] + CIC_DELAY, decsize);
 
         // Prepare CIC third level
-        std::memmove(mCICBuffer[i][3][cid], mCICBuffer[i][3][cid] + mLastCICPos, CIC_DELAY * sizeof(Float32));
+        MemMove(mCICBuffer[i][3][cid], mCICBuffer[i][3][cid] + mLastCICPos, CIC_DELAY);
         // Sliding window sum
-        std::partial_sum(mCICBuffer[i][2][cid] + CIC_DELAY, mCICBuffer[i][2][cid] + CIC_DELAY + decsize, mCICBuffer[i][3][cid] + CIC_DELAY);
+        PartialSum(mCICBuffer[i][2][cid] + CIC_DELAY, mCICBuffer[i][3][cid] + CIC_DELAY, decsize);
 
         // CIC last level to Baseband
-        std::partial_sum(mCICBuffer[i][3][cid] + CIC_DELAY, mCICBuffer[i][3][cid] + CIC_DELAY + decsize, mBaseBandReal[i]);
+        PartialSum(mCICBuffer[i][3][cid] + CIC_DELAY, mBaseBandReal[i], decsize);
 
         // Multiply the sin
-        std::transform(mFRecDataBuffer, mFRecDataBuffer + mCurRecPos, mSinBuffer[i] + mCurProcPos, mTempBuffer, std::multiplies<Float32>());
+        TransformMultiply(mFRecDataBuffer, mSinBuffer[i] + mCurProcPos, mTempBuffer, mCurRecPos);
         
         cid = 1;
         // Sum CIC_DEC points of data, put into CICbuffer
-        std::memmove(mCICBuffer[i][0][cid], mCICBuffer[i][0][cid] + mLastCICPos, CIC_DELAY * sizeof(Float32));
+        MemMove(mCICBuffer[i][0][cid], mCICBuffer[i][0][cid] + mLastCICPos, CIC_DELAY);
         index = CIC_DELAY;
         for (UInt32 k = 0; k < mCurRecPos; k += CIC_DEC) {
-            mCICBuffer[i][0][cid][index] = std::accumulate(mTempBuffer + k, mTempBuffer + k + CIC_DEC, 0.0f);
+            mCICBuffer[i][0][cid][index] = Accumulate(mTempBuffer + k, CIC_DEC);
             index++;
         }
 
         // Prepare CIC first level
-        std::memmove(mCICBuffer[i][1][cid], mCICBuffer[i][1][cid] + mLastCICPos, CIC_DELAY * sizeof(Float32));
+        MemMove(mCICBuffer[i][1][cid], mCICBuffer[i][1][cid] + mLastCICPos, CIC_DELAY);
         // Sliding window sum
-        std::partial_sum(mCICBuffer[i][0][cid] + CIC_DELAY, mCICBuffer[i][0][cid] + CIC_DELAY + decsize, mCICBuffer[i][1][cid] + CIC_DELAY);
+        PartialSum(mCICBuffer[i][0][cid] + CIC_DELAY, mCICBuffer[i][1][cid] + CIC_DELAY, decsize);
 
         // Prepare CIC second level
-        std::memmove(mCICBuffer[i][2][cid], mCICBuffer[i][2][cid] + mLastCICPos, CIC_DELAY * sizeof(Float32));
+        MemMove(mCICBuffer[i][2][cid], mCICBuffer[i][2][cid] + mLastCICPos, CIC_DELAY);
         // Sliding window sum
-        std::partial_sum(mCICBuffer[i][1][cid] + CIC_DELAY, mCICBuffer[i][1][cid] + CIC_DELAY + decsize, mCICBuffer[i][2][cid] + CIC_DELAY);
+        PartialSum(mCICBuffer[i][1][cid] + CIC_DELAY, mCICBuffer[i][2][cid] + CIC_DELAY, decsize);
 
         // Prepare CIC third level
-        std::memmove(mCICBuffer[i][3][cid], mCICBuffer[i][3][cid] + mLastCICPos, CIC_DELAY * sizeof(Float32));
+        MemMove(mCICBuffer[i][3][cid], mCICBuffer[i][3][cid] + mLastCICPos, CIC_DELAY);
         // Sliding window sum
-        std::partial_sum(mCICBuffer[i][2][cid] + CIC_DELAY, mCICBuffer[i][2][cid] + CIC_DELAY + decsize, mCICBuffer[i][3][cid] + CIC_DELAY);
+        PartialSum(mCICBuffer[i][2][cid] + CIC_DELAY, mCICBuffer[i][3][cid] + CIC_DELAY, decsize);
 
         // CIC last level to Baseband
-        std::partial_sum(mCICBuffer[i][3][cid] + CIC_DELAY, mCICBuffer[i][3][cid] + CIC_DELAY + decsize, mBaseBandImage[i]);
+        PartialSum(mCICBuffer[i][3][cid] + CIC_DELAY, mBaseBandImage[i], decsize);
     }
 
     mCurProcPos = mCurProcPos + mCurRecPos;
@@ -444,8 +428,3 @@ void RangeFinder::GetBaseBand() {
     mLastCICPos = decsize;
     mCurRecPos = 0;
 }
-
-
-
-
-

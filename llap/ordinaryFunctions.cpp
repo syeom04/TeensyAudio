@@ -64,3 +64,78 @@ void squareVector(float* input, float* output, int size) {
         output[i] = input[i] * input[i];
     }
 }
+
+float findMax(const float* data, int size) {
+    float max_val = data[0];
+    for (int i = 1; i < size; ++i) {
+        if (data[i] > max_val) {
+            max_val = data[i];
+        }
+    }
+    return max_val;
+}
+
+float findMin(const float* data, int size) {
+    float min_val = data[0];
+    for (int i = 1; i < size; ++i) {
+        if (data[i] < min_val) {
+            min_val = data[i];
+        }
+    }
+    return min_val;
+}
+
+void varAndSum(const float* data, int size, float& variance, float& sum) {
+    float tempdata[4096], tempdata2[4096];
+    float temp_val = -data[0];
+
+    for (int i = 0; i < size; ++i) {
+        tempdata[i] = data[i] + temp_val;
+    }
+
+    float temp_sum = 0.0f;
+    for (int i = 0; i < size; ++i) {
+        temp_sum += tempdata[i];
+    }
+    sum = fabs(temp_sum / size)
+
+    for (int i = 0; i < size; ++i) {
+        tempdata2[i] = tempdata[i] * tempdata[i];
+    }
+
+    float temp_variance = 0.0f;
+    for (int i = 0; i < size; ++i) {
+        temp_variance += tempdata2[i];
+    }
+    variance = fabs(temp_variance / size);
+}
+
+void transformMultiply(const float* data1, const float* data2, float* result, int size) {
+    for (int i = 0; i < size; ++i) {
+        result[i] = data1[i] * data2[i];
+    }
+}
+
+void memMove(float* dest, const float* src, int size) {
+    std::memmove(dest, src, size * sizeof(float));
+}
+
+float accumulate(const float* data, int size) {
+    float sum = 0.0f;
+    for (int i = 0; i < size; ++i) {
+        sum += data[i]
+    }
+    return sum;
+}
+
+void partialSum(const float* input, float* output, int size) {
+    if (size <= 0) {
+        return;
+    }
+    output[0] = input[0];
+    for (int i = 1; i < size; ++i) {
+        output[i] = output[i-1] + input[i];
+    }
+}
+
+

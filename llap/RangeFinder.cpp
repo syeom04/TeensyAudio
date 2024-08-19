@@ -186,11 +186,11 @@ float RangeFinder::GetDistanceChange() {
 }
 
 
-Float32 RangeFinder::CalculateDistance() {
-    Float32 distance = 0;
+float RangeFinder::CalculateDistance() {
+    float distance = 0;
     Complex tempcomplex;
-    Float32 tempdata[4096], tempdata2[4096], tempdata3[4096], temp_val;
-    Float32 phasedata[MAX_NUM_FREQS][4096];
+    float tempdata[4096], tempdata2[4096], tempdata3[4096], temp_val;
+    float phasedata[MAX_NUM_FREQS][4096];
     int ignorefreq[MAX_NUM_FREQS];
     
     if (mDecsize > 4096) {
@@ -238,8 +238,8 @@ Float32 RangeFinder::CalculateDistance() {
     for (int i = 0; i < mDecsize; i++)
         tempdata2[i] = i;
     
-    Float32 sumxy = 0;
-    Float32 sumy = 0;
+    float sumxy = 0;
+    float sumy = 0;
     int numfreqused = 0;
     for (int f = 0; f < mNumFreqs; f++) {
         if (ignorefreq[f]) {
@@ -259,32 +259,93 @@ Float32 RangeFinder::CalculateDistance() {
         return distance;
     }
     
-    Float32 deltax = mNumFreqs * ((mDecsize - 1) * mDecsize * (2 * mDecsize - 1) / 6 - (mDecsize - 1) * mDecsize * (mDecsize - 1) / 4);
-    Float32 delta = (sumxy - sumy * (mDecsize - 1) / 2.0) / deltax * mNumFreqs / numfreqused;
+    float deltax = mNumFreqs * ((mDecsize - 1) * mDecsize * (2 * mDecsize - 1) / 6 - (mDecsize - 1) * mDecsize * (mDecsize - 1) / 4);
+    float delta = (sumxy - sumy * (mDecsize - 1) / 2.0) / deltax * mNumFreqs / numfreqused;
     
-    Float32 varsum = 0;
-    Float32 var_val[MAX_NUM_FREQS];
-    for (int i = 0; i < mDecsize; i++)
-        tempdata2[i]
+    float varsum = 0;
+    float var_val[MAX_NUM_FREQS];
+for(int i=0;i<mDecsize;i++)
+        tempdata2[i]=i*delta;
+    
+    //get variance of each freq;
+    for(int f=0;f<mNumFreqs;f++)
+    {   var_val[f]=0;
+        if(ignorefreq[f])
+        {
+            continue;
+        }
+        subtractVectors(tempdata2, phasedata[f], tempdata, mDecsize);
+        squareVector(tempdata, tempdata3, mDecsize);
+        sumVectorElements(tempdata3, &var_val[f], mDecsize);
+        varsum+=var_val[f];
+    }
+    varsum=varsum/numfreqused;
+    for(int f=0;f<mNumFreqs;f++)
+    {
+        if(ignorefreq[f])
+        {
+            continue;
+        }
+        if(var_val[f]>varsum)
+            ignorefreq[f]=1;
+    }
+    
+    //linear regression
+    for(int i=0;i<mDecsize;i++)
+        tempdata2[i]=i;
+    
+    sumxy=0;
+    sumy=0;
+    numfreqused=0;
+    for(int f=0;f<mNumFreqs;f++)
+    {
+        if(ignorefreq[f])
+        {
+            continue;
+        }
+        
+        numfreqused++;
+        
+        multiplyVectors(phasedata[f], tempdata2, tempdata, mDecsize);
+        sumVectorElements(tempdata, &temp_val, mDecsize);
+        sumxy+=temp_val;
+        sumVectorElements(phasedata[f], &temp_val, mDecsize);
+        sumy+=temp_val;
+        
+    }
+    if(numfreqused==0)
+    {
+        distance=0;
+        return distance;
+    }
+    
+    delta=(sumxy-sumy*(mDecsize-1)/2.0)/deltax*mNumFreqs/numfreqused;
+    
+    distance=-delta*mDecsize/2;
+    return distance;
 }
 
 void RangeFinder::RemoveDC() {
+    int f,i;
+    float tempdata[4096],tempdata2[4096],temp_val;
+    float vsum,dsum,max_valr,min_valr,max_vali,min_vali;
 
     if (mDecsize > 4096)
         return;
 
     // 'Levd' algorithm to calculate the DC value;
-    for (int f = 0; f < mNumFreqs; f++) {
-        float vsum = 0;
-        float dsum = 0;
+    for (f = 0; f < mNumFreqs; f++) {
+        vsum = 0;
+        dsum = 0;
 
         // real part
-        float max_valr = findMax(mBaseBandReal[f], mDecsize);
-        float min_valr = findMin(mBaseBandReal[f], mDecsize)
+        max_valr = findMax(mBaseBandReal[f], mDecsize);
+        min_valr = findMin(mBaseBandReal[f], mDecsize)
         varAndSum(mBaseBandReal[f], mDecsize, vsum, dsum);
 
-        float max_vali = findMax(mBaseBandImage[f], mDecsize);
-        float min_vali = findMin(mBaseBandImage[f], mDecsize);
+        // imag part
+        max_vali = findMax(mBaseBandImage[f], mDecsize);
+        min_vali = findMin(mBaseBandImage[f], mDecsize);
         varAndSum(mBaseBandImage[f], mDecsize, vsum, dsum);
 
         mFreqPower[f] = vsum + dsum * dsum;
@@ -350,13 +411,13 @@ void RangeFinder::SendSocketData() {
 }
 
 void RangeFinder::GetBaseBand() {
-    UInt32 i, index, decsize, cid;
+    int i, index, decsize, cid;
     decsize = mCurRecPos / CIC_DEC;
     mDecsize = decsize;
 
-    // Change data from int to float32
+    // Change data from int to float
     for (i = 0; i < mCurRecPos; i++) {
-        mFRecDataBuffer[i] = static_cast<Float32>(mRecDataBuffer[i] / 32767.0);
+        mFRecDataBuffer[i] = static_cast<float>(mRecDataBuffer[i] / 32767.0);
     }
 
     for (i = 0; i < mNumFreqs; i++) { // mNumFreqs
@@ -373,52 +434,52 @@ void RangeFinder::GetBaseBand() {
         }
 
         // Prepare CIC first level
-        MemMove(mCICBuffer[i][1][cid], mCICBuffer[i][1][cid] + mLastCICPos, CIC_DELAY);
+        memMove(mCICBuffer[i][1][cid], mCICBuffer[i][1][cid] + mLastCICPos, CIC_DELAY);
         // Sliding window sum
-        PartialSum(mCICBuffer[i][0][cid] + CIC_DELAY, mCICBuffer[i][1][cid] + CIC_DELAY, decsize);
+        partialSum(mCICBuffer[i][0][cid] + CIC_DELAY, mCICBuffer[i][1][cid] + CIC_DELAY, decsize);
 
         // Prepare CIC second level
-        MemMove(mCICBuffer[i][2][cid], mCICBuffer[i][2][cid] + mLastCICPos, CIC_DELAY);
+        memMove(mCICBuffer[i][2][cid], mCICBuffer[i][2][cid] + mLastCICPos, CIC_DELAY);
         // Sliding window sum
-        PartialSum(mCICBuffer[i][1][cid] + CIC_DELAY, mCICBuffer[i][2][cid] + CIC_DELAY, decsize);
+        partialSum(mCICBuffer[i][1][cid] + CIC_DELAY, mCICBuffer[i][2][cid] + CIC_DELAY, decsize);
 
         // Prepare CIC third level
-        MemMove(mCICBuffer[i][3][cid], mCICBuffer[i][3][cid] + mLastCICPos, CIC_DELAY);
+        memMove(mCICBuffer[i][3][cid], mCICBuffer[i][3][cid] + mLastCICPos, CIC_DELAY);
         // Sliding window sum
-        PartialSum(mCICBuffer[i][2][cid] + CIC_DELAY, mCICBuffer[i][3][cid] + CIC_DELAY, decsize);
+        partialSum(mCICBuffer[i][2][cid] + CIC_DELAY, mCICBuffer[i][3][cid] + CIC_DELAY, decsize);
 
         // CIC last level to Baseband
-        PartialSum(mCICBuffer[i][3][cid] + CIC_DELAY, mBaseBandReal[i], decsize);
+        partialSum(mCICBuffer[i][3][cid] + CIC_DELAY, mBaseBandReal[i], decsize);
 
         // Multiply the sin
-        TransformMultiply(mFRecDataBuffer, mSinBuffer[i] + mCurProcPos, mTempBuffer, mCurRecPos);
+        transformMultiply(mFRecDataBuffer, mSinBuffer[i] + mCurProcPos, mTempBuffer, mCurRecPos);
         
         cid = 1;
         // Sum CIC_DEC points of data, put into CICbuffer
-        MemMove(mCICBuffer[i][0][cid], mCICBuffer[i][0][cid] + mLastCICPos, CIC_DELAY);
+        memMove(mCICBuffer[i][0][cid], mCICBuffer[i][0][cid] + mLastCICPos, CIC_DELAY);
         index = CIC_DELAY;
         for (UInt32 k = 0; k < mCurRecPos; k += CIC_DEC) {
-            mCICBuffer[i][0][cid][index] = Accumulate(mTempBuffer + k, CIC_DEC);
+            mCICBuffer[i][0][cid][index] = accumulate(mTempBuffer + k, CIC_DEC);
             index++;
         }
 
         // Prepare CIC first level
-        MemMove(mCICBuffer[i][1][cid], mCICBuffer[i][1][cid] + mLastCICPos, CIC_DELAY);
+        memMove(mCICBuffer[i][1][cid], mCICBuffer[i][1][cid] + mLastCICPos, CIC_DELAY);
         // Sliding window sum
-        PartialSum(mCICBuffer[i][0][cid] + CIC_DELAY, mCICBuffer[i][1][cid] + CIC_DELAY, decsize);
+        partialSum(mCICBuffer[i][0][cid] + CIC_DELAY, mCICBuffer[i][1][cid] + CIC_DELAY, decsize);
 
         // Prepare CIC second level
-        MemMove(mCICBuffer[i][2][cid], mCICBuffer[i][2][cid] + mLastCICPos, CIC_DELAY);
+        memMove(mCICBuffer[i][2][cid], mCICBuffer[i][2][cid] + mLastCICPos, CIC_DELAY);
         // Sliding window sum
-        PartialSum(mCICBuffer[i][1][cid] + CIC_DELAY, mCICBuffer[i][2][cid] + CIC_DELAY, decsize);
+        partialSum(mCICBuffer[i][1][cid] + CIC_DELAY, mCICBuffer[i][2][cid] + CIC_DELAY, decsize);
 
         // Prepare CIC third level
-        MemMove(mCICBuffer[i][3][cid], mCICBuffer[i][3][cid] + mLastCICPos, CIC_DELAY);
+        memMove(mCICBuffer[i][3][cid], mCICBuffer[i][3][cid] + mLastCICPos, CIC_DELAY);
         // Sliding window sum
-        PartialSum(mCICBuffer[i][2][cid] + CIC_DELAY, mCICBuffer[i][3][cid] + CIC_DELAY, decsize);
+        partialSum(mCICBuffer[i][2][cid] + CIC_DELAY, mCICBuffer[i][3][cid] + CIC_DELAY, decsize);
 
         // CIC last level to Baseband
-        PartialSum(mCICBuffer[i][3][cid] + CIC_DELAY, mBaseBandImage[i], decsize);
+        partialSum(mCICBuffer[i][3][cid] + CIC_DELAY, mBaseBandImage[i], decsize);
     }
 
     mCurProcPos = mCurProcPos + mCurRecPos;

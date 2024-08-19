@@ -428,7 +428,7 @@ void RangeFinder::GetBaseBand() {
         // Sum CIC_DEC points of data, put into CICbuffer
         memMove(mCICBuffer[i][0][cid], mCICBuffer[i][0][cid] + mLastCICPos, CIC_DELAY);
         index = CIC_DELAY;
-        for (UInt32 k = 0; k < mCurRecPos; k += CIC_DEC) {
+        for (uint32_t k = 0; k < mCurRecPos; k += CIC_DEC) {
             mCICBuffer[i][0][cid][index] = accumulate(mTempBuffer + k, CIC_DEC);
             index++;
         }
@@ -458,7 +458,7 @@ void RangeFinder::GetBaseBand() {
         // Sum CIC_DEC points of data, put into CICbuffer
         memMove(mCICBuffer[i][0][cid], mCICBuffer[i][0][cid] + mLastCICPos, CIC_DELAY);
         index = CIC_DELAY;
-        for (UInt32 k = 0; k < mCurRecPos; k += CIC_DEC) {
+        for (uint32_t k = 0; k < mCurRecPos; k += CIC_DEC) {
             mCICBuffer[i][0][cid][index] = accumulate(mTempBuffer + k, CIC_DEC);
             index++;
         }

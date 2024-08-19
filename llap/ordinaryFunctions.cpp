@@ -3,12 +3,6 @@
 #include <algorithm>
 #include <limits>
 
-// Define a structure for complex numbers with the real and imag components
-struct Complex {
-    float* real;
-    float* imag;
-};
-
 void calcSquareMag(Complex* input, float* output, int size) {
     for (int i = 0; i < size; i++) {
         output[i] = input->real[i] * input->real[i] + input->imag[i] * input->imag[i];

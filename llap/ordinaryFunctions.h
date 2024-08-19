@@ -3,9 +3,10 @@
 
 #include <Arduino.h>
 
+// Define a structure for complex numbers with the real and imag components
 struct Complex {
-    float real;
-    float imag;
+    float* real;
+    float* imag;
 };
 
 // Function declarations

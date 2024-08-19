@@ -63,7 +63,7 @@ void setup() {
 
 
 void loop() {
-  if((millis()-Timer)>5000 && mode == 1) {
+  if((millis()-Timer)>10000 && mode == 1) {
     stopRecording();
   }
   else {

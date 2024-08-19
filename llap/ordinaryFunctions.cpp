@@ -5,13 +5,13 @@
 
 // Define a structure for complex numbers with the real and imag components
 struct Complex {
-    float real;
-    float imag;
+    float* real;
+    float* imag;
 };
 
 void calcSquareMag(Complex* input, float* output, int size) {
     for (int i = 0; i < size; i++) {
-        output[i] = input[i].real * input[i].real + input[i].imag * input[i].imag;
+        output[i] = input->real[i] * input->real[i] + input->imag[i] * input->imag[i];
     }
 }
 
@@ -24,7 +24,7 @@ void calculateTotal(float* input, int size, float* result) {
 
 void calculatePhases(Complex* input, float* output, int size) {
     for (int i = 0; i < size; i++) {
-        output[i] = atan2(input[i].imag, input[i].real);
+        output[i] = atan2(input->imag[i], input->real[i])
     }
 }
 

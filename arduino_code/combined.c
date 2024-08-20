@@ -35,13 +35,17 @@ File frec;
 void setup() {
   AudioMemory(120); // Allocate memory for audio processing
 
+  filter1.frequency(30);
+  amp1.gain(8.5);
+  Serial.begin(9600);
+
   // Enable the audio shield and configure the input/output
   sgtl5000_1.enable();
   sgtl5000_1.inputSelect(myInput);
   sgtl5000_1.volume(0.5);
 
   // Set I2S frequency
-  setI2SFreq(192000);
+  setI2SFreq(48000);
   
   // Initialize SD card
   SPI.setMOSI(SDCARD_MOSI_PIN);

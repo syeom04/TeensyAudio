@@ -49,7 +49,8 @@ void setup() {
     // Amplify signal appropriately to useful range
     amp1.gain(8.5);
     // Set I2S frequency to 192000 Hz
-    setI2SFreq(192000);
+    // setI2SFreq(192000);
+    setI2SFreq(48000)
     // Initialize Serial for debugging
     Serial.begin(9600);
 }

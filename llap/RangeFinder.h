@@ -4,7 +4,8 @@
 //
 //  Created by Wei Wang on 2/19/16.
 //  Copyright © 2016 Nanjing University. All rights reserved.
-//
+//  
+// Adapted by Seungyun YEOM, WIT Lab @ KAIST: Conversion to C++ from objective-C
 
 #ifndef RangeFinder_h
 #define RangeFinder_h
@@ -42,52 +43,55 @@
 class RangeFinder
 {
 public:
-    RangeFinder( UInt32 inMaxFramesPerSlice, UInt32 inNumFreqs, Float32 inStartFreq, Float32 inFreqInterv );
+    RangeFinder( uint32_t inMaxFramesPerSlice, uint32_t inNumFreqs, float inStartFreq, float inFreqInterv );
     ~RangeFinder();
+
+    void processData();
+    float getDistanceChange();
     
-    int16_t*        GetPlayBuffer(UInt32 inSamples);
-    int16_t*        GetRecDataBuffer(UInt32 inSamples);
-    SInt16*         GetOutputData(UInt32 inDataBytes);
-    Float32         GetDistanceChange(void);
+    int16_t*        GetPlayBuffer(uint32_t inSamples);
+    int16_t*        GetRecDataBuffer(uint32_t inSamples);
+    int16_t*         GetOutputData(uint32_t inDataBytes);
+    float         GetDistanceChange(void);
     uint8_t*        GetSocketBuffer(void);
     void            AdvanceSocketBuffer(long length);
-    UInt32          mSocBufPos;
+    uint32_t          mSocBufPos;
     
 private:
     void            InitBuffer();
     void            GetBaseBand();
     void            RemoveDC();
     void            SendSocketData();
-    Float32         CalculateDistance();
+    float         CalculateDistance();
     
     
-    UInt32          mNumFreqs;//number of frequency
-    UInt32          mCurPlayPos;//current play position
-    UInt32          mCurProcPos;//current process position
-    UInt32          mCurRecPos;//current receive position
-    UInt32          mLastCICPos;//last cic filter position
-    UInt32          mBufferSize;//buffer size
-    UInt32          mRecDataSize;//receive data size
-    UInt32          mDecsize;//buffer size after decimation
-    Float32         mFreqInterv;//frequency interval
-    Float32         mSoundSpeed;//sound speed
-    Float32         mFreqs[MAX_NUM_FREQS];//frequency of the ultsound signal
-    Float32         mWaveLength[MAX_NUM_FREQS];//wave length of the ultsound signal
+    uint32_t          mNumFreqs;//number of frequency
+    uint32_t          mCurPlayPos;//current play position
+    uint32_t          mCurProcPos;//current process position
+    uint32_t          mCurRecPos;//current receive position
+    uint32_t          mLastCICPos;//last cic filter position
+    uint32_t          mBufferSize;//buffer size
+    uint32_t          mRecDataSize;//receive data size
+    uint32_t          mDecsize;//buffer size after decimation
+    float         mFreqInterv;//frequency interval
+    float         mSoundSpeed;//sound speed
+    float         mFreqs[MAX_NUM_FREQS];//frequency of the ultsound signal
+    float         mWaveLength[MAX_NUM_FREQS];//wave length of the ultsound signal
     
     int16_t*        mPlayBuffer;
     int16_t*        mRecDataBuffer;
-    Float32*        mFRecDataBuffer;
-    Float32*        mSinBuffer[MAX_NUM_FREQS];
-    Float32*        mCosBuffer[MAX_NUM_FREQS];
-    Float32*        mBaseBandReal[MAX_NUM_FREQS];
-    Float32*        mBaseBandImage[MAX_NUM_FREQS];
-    Float32*        mTempBuffer;
-    Float32*        mCICBuffer[MAX_NUM_FREQS][CIC_SEC][2];
+    float*        mFRecDataBuffer;
+    float*        mSinBuffer[MAX_NUM_FREQS];
+    float*        mCosBuffer[MAX_NUM_FREQS];
+    float*        mBaseBandReal[MAX_NUM_FREQS];
+    float*        mBaseBandImage[MAX_NUM_FREQS];
+    float*        mTempBuffer;
+    float*        mCICBuffer[MAX_NUM_FREQS][CIC_SEC][2];
     uint8_t         mSocketBuffer[SOCKETBUFLEN];
-    Float32         mDCValue[2][MAX_NUM_FREQS];
-    Float32         mMaxValue[2][MAX_NUM_FREQS];
-    Float32         mMinValue[2][MAX_NUM_FREQS];
-    Float32         mFreqPower[MAX_NUM_FREQS];
+    float         mDCValue[2][MAX_NUM_FREQS];
+    float         mMaxValue[2][MAX_NUM_FREQS];
+    float         mMinValue[2][MAX_NUM_FREQS];
+    float         mFreqPower[MAX_NUM_FREQS];
 };
 
 #endif /* RangeFinder_h */

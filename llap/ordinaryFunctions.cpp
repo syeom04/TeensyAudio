@@ -2,6 +2,7 @@
 #include <cmath> // for atan2, fabs, M_PI
 #include <algorithm>
 #include <limits>
+#include <cstring>
 
 void calcSquareMag(Complex* input, float* output, int size) {
     for (int i = 0; i < size; i++) {
@@ -18,7 +19,7 @@ void calculateTotal(float* input, int size, float* result) {
 
 void calculatePhases(Complex* input, float* output, int size) {
     for (int i = 0; i < size; i++) {
-        output[i] = atan2(input->imag[i], input->real[i])
+        output[i] = atan2(input->imag[i], input->real[i]);
     }
 }
 
@@ -91,7 +92,7 @@ void varAndSum(const float* data, int size, float& variance, float& sum) {
     for (int i = 0; i < size; ++i) {
         temp_sum += tempdata[i];
     }
-    sum = fabs(temp_sum / size)
+    sum = fabs(temp_sum / size);
 
     for (int i = 0; i < size; ++i) {
         tempdata2[i] = tempdata[i] * tempdata[i];
@@ -111,13 +112,13 @@ void transformMultiply(const float* data1, const float* data2, float* result, in
 }
 
 void memMove(float* dest, const float* src, int size) {
-    std::memmove(dest, src, size * sizeof(float));
+    memmove(dest, src, size * sizeof(float));
 }
 
 float accumulate(const float* data, int size) {
     float sum = 0.0f;
     for (int i = 0; i < size; ++i) {
-        sum += data[i]
+        sum += data[i];
     }
     return sum;
 }

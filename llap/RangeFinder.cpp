@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <cmath>
 #include <algorithm>
+#include <cstring>
+#include <numeric>
 
 RangeFinder::RangeFinder(uint32_t inMaxFramesPerSlice, uint32_t inNumFreq, float inStartFreq, float inFreqInterv) {
     // Number of frequency
@@ -342,7 +344,7 @@ void RangeFinder::RemoveDC() {
 
         // real part
         max_valr = findMax(mBaseBandReal[f], mDecsize);
-        min_valr = findMin(mBaseBandReal[f], mDecsize)
+        min_valr = findMin(mBaseBandReal[f], mDecsize);
         varAndSum(mBaseBandReal[f], mDecsize, vsum, dsum);
 
         // imag part

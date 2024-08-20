@@ -10,11 +10,6 @@
 #ifndef RangeFinder_h
 #define RangeFinder_h
 
-
-#include <AudioToolbox/AudioToolbox.h>
-#include <Accelerate/Accelerate.h>
-#include <libkern/OSAtomic.h>
-
 #include <stdint.h>
 
 //max number of frequency

@@ -9,7 +9,7 @@ void AudioController::GetRecDataBuffer(float* data, int size) {
     rangeFinder->processData(data, size);
 }
 
-void AudioController:printDistanceChange() {
+void AudioController::printDistanceChange() {
     float distanceChange = rangeFinder->getDistanceChange();
     std::cout << "Distance Change: " << distanceChange << std::endl;
 }

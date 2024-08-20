@@ -7,7 +7,7 @@ class AudioController {
 public: 
     AudioController(int maxFramesPerSlice, int numFreq, float startFreq, float freqInterval);
     void GetRecDataBuffer(float* data, int size);
-    void printdistanceChange();
+    void printDistanceChange();
 
 private:
     RangeFinder* rangeFinder;

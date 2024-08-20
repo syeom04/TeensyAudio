@@ -26,6 +26,10 @@ For questions or collaboration, please contact:
 
 ## Audio Spectrogram
 <img src = "https://github.com/user-attachments/assets/1ec382d5-9cc3-4c99-9b09-54d6f74373e1" width = "200">
+<p>Computer mic testing</p>
+<img src = "https://github.com/user-attachments/assets/79d6e8b8-47de-4e43-bdd5-9a1365fdb567" width = "200">
+<p>Attempt using SPH0645</p>
+
 
 
 

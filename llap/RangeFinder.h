@@ -15,6 +15,8 @@
 #include <Accelerate/Accelerate.h>
 #include <libkern/OSAtomic.h>
 
+#include <stdint.h>
+
 //max number of frequency
 #define MAX_NUM_FREQS           16
 //pi
@@ -46,7 +48,7 @@ public:
     RangeFinder( uint32_t inMaxFramesPerSlice, uint32_t inNumFreqs, float inStartFreq, float inFreqInterv );
     ~RangeFinder();
 
-    void processData();
+    void processData(float* data, int size);
     float getDistanceChange();
     
     int16_t*        GetPlayBuffer(uint32_t inSamples);
@@ -64,7 +66,12 @@ private:
     void            SendSocketData();
     float         CalculateDistance();
     
-    
+    int maxFramesPerSlice;
+    int numFreq;
+    float startFreq;
+    float freqInterval;
+    float distanceChange;
+
     uint32_t          mNumFreqs;//number of frequency
     uint32_t          mCurPlayPos;//current play position
     uint32_t          mCurProcPos;//current process position

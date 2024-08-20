@@ -6,7 +6,12 @@ AudioController::AudioController(int maxFramesPerSlice, int numFreq, float start
 }
 
 void AudioController::GetRecDataBuffer(float* data, int size) {
-    rangeFinder->
+    rangeFinder->processData(data, size);
+}
+
+void AudioController:printDistanceChange() {
+    float distanceChange = rangeFinder->getDistanceChange();
+    std::cout << "Distance Change: " << distanceChange << std::endl;
 }
 
 

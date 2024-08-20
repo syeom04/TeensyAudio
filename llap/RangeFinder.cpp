@@ -2,6 +2,8 @@
 #include "RangeFinder.h"
 #include <stdlib.h>
 #include <stdint.h>
+#include <cmath>
+#include <algorithm>
 
 RangeFinder::RangeFinder(uint32_t inMaxFramesPerSlice, uint32_t inNumFreq, float inStartFreq, float inFreqInterv) {
     // Number of frequency
@@ -489,3 +491,14 @@ void RangeFinder::GetBaseBand() {
     mLastCICPos = decsize;
     mCurRecPos = 0;
 }
+
+
+void RangeFinder::processData(float* data, int size) {
+    distanceChange = std::accumulate(data, data+size, 0.0f) / size;
+}
+
+float RangeFinder::getDistanceChange() {
+    return distanceChange;
+}
+
+

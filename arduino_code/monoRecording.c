@@ -24,6 +24,7 @@ const int myInput = AUDIO_INPUT_LINEIN;
 
 unsigned long Timer;
 File frec;
+bool recordingFinished = false;
 
 void setup() {
     // Reduced memory size for mono audio recording
@@ -54,15 +55,17 @@ void setup() {
 }
 
 void loop() {
-    if ((millis() - Timer) > 10000) {
-        stopRecording();
-    }
-    else {
-        Serial.println("Recording in progress .");
-        Serial.println("Recording in progress ..");
-        Serial.println("Recording in progress ...");
-        continueRecording();
-        delay(1000);
+    if (!recordingFinished) {
+        if ((millis() - Timer) > 10000) {
+            stopRecording();
+        }
+        else {
+            Serial.println("Recording in progress .");
+            Serial.println("Recording in progress ..");
+            Serial.println("Recording in progress ...");
+            continueRecording();
+            delay(1000);
+        }
     }
 }
 
@@ -81,8 +84,12 @@ void startRecording() {
 void continueRecording() {
     if (queue1.available() >= 2) {
         byte buffer[512];
+
+        // Read the first 256 bytes from queue1 into buffer
         memcpy(buffer, queue1.readBuffer(), 256);
         queue1.freeBuffer();
+
+        // Read the next 256 bytes from queue1 into buffer
         memcpy(buffer+256, queue1.readBuffer(), 256);
         queue1.freeBuffer();
 
@@ -92,20 +99,31 @@ void continueRecording() {
         // Check the SD write time
         Serial.print("SD write, us=");
         Serial.println(usec);
+
+        // Output the raw buffer data to the Serial Monitor
+        Serial.print("Buffer Data: ");
+        for (int i = 0; i < 512; i++) {
+            Serial.print(buffer[i]);
+            Serial.print(" ");
+            if ((i + 1) % 16 == 0) {
+                Serial.println();
+            }
+        }
     }
-
-
 }
 
 void stopRecording() {
-    Serial.println("Finished recording!");
-    queue1.end();
+    if (!recordingFinished) {
+        Serial.println("Finished recording!");
+        queue1.end();
 
-    while (queue1.available() > 0) {
-        frec.write((byte*)queue1.readBuffer(), 256);
-        queue1.freeBuffer();
+        while (queue1.available() > 0) {
+            frec.write((byte*)queue1.readBuffer(), 256);
+            queue1.freeBuffer();
+        }
+        frec.close();
+        recordingFinished = true;
     }
-    frec.close();
 }
 
 void setI2SFreq(int freq) {

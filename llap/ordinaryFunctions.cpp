@@ -123,13 +123,12 @@ float accumulate(const float* data, int size) {
     return sum;
 }
 
-void partialSum(const float* input, float* output, int size) {
-    if (size <= 0) {
-        return;
-    }
-    output[0] = input[0];
-    for (int i = 1; i < size; ++i) {
-        output[i] = output[i-1] + input[i];
+void partialSum(const float* input, float* output, int size, int length) {
+    for (int i = 0; i < size; i++) {
+        output[i] = 0;
+        for (int j = 0; j < length; j++) {
+            output[i] += input[i + j];
+        }
     }
 }
 

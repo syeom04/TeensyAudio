@@ -29,6 +29,7 @@ def convert_raw_to_wav(raw_filename, wav_filename, sample_rate=44100, bit_depth=
     
     try:
         result = subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(' '.join(command))
         print(f"Conversion successful! {raw_filename} -> {wav_filename}")
     except subprocess.CalledProcessError as e:
         print(f"Error during conversion: {e.stderr.decode()}")

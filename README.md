@@ -46,6 +46,9 @@ For inquiries, collaboration opportunities, or further information, please reach
 <p><i>Left: Computer microphone testing</i></p>
 <p><i>Right: Testing with SPH0645 microphone</i></p>
 
+<img src = "https://github.com/user-attachments/assets/f0468de3-b715-4720-9d8f-b6c074c3050f" width = "200" align = "center">
+
+
 ---
 
 Thank you for visiting the repository! Your feedback and contributions are greatly appreciated. 😊

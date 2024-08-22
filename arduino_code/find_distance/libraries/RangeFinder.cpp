@@ -7,6 +7,9 @@
 #include <cstring>
 #include <numeric>
 
+#define PI 3.141592
+#define AUDIO_SAMPLE_RATE 44100
+
 RangeFinder::RangeFinder(uint32_t inMaxFramesPerSlice, uint32_t inNumFreq, float inStartFreq, float inFreqInterv) {
     // Number of frequency
     mNumFreqs = inNumFreq;

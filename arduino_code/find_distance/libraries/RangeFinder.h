@@ -15,9 +15,9 @@
 //max number of frequency
 #define MAX_NUM_FREQS           16
 //pi
-#define PI                      3.1415926535
+// #define PI                      3.1415926535
 //audio sample rate
-#define AUDIO_SAMPLE_RATE       48000  //should be the same as in controller, will add later
+// #define AUDIO_SAMPLE_RATE       48000  //should be the same as in controller, will add later
 //default temperature
 #define TEMPERATURE             20
 //volume

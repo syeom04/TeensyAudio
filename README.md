@@ -1,14 +1,24 @@
 # 🌟 Summer Audio Analysis Project
 
-**By Seungyun Yeom, Lab Intern, WIT LAB @ KAIST**
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-In%20Progress-yellow" alt="Status">
+  <img src="https://img.shields.io/badge/License-Proprietary-blue" alt="License">
+  <img src="https://img.shields.io/badge/Maintainer-Seungyun%20Yeom-orange" alt="Maintainer">
+</p>
 
-Welcome to the Summer Audio Analysis Project repository! This project encompasses my research and experiments in audio analysis, with a focus on applications in wearable technology.
+Welcome to the **Summer Audio Analysis Project** repository! This project showcases my research and experiments in audio analysis, focusing on applications in wearable technology.
 
-**Equipment Used:**
-- Teensy 4.1
-- SPH0645 Microphone
+<p align="center">
+  <img src="https://media.giphy.com/media/3ov9jNziFTMfzSumAw/giphy.gif" alt="Audio Waveform Animation" width="600">
+</p>
 
-[Research Presentation](https://docs.google.com/presentation/d/1-e8CvU8t24MpcVqNmlJDZ_smbfroyqGtAjFgcp6NYI4/edit#slide=id.p)
+---
+
+## 🎛️ Equipment Used
+- **Teensy 4.1**
+- **SPH0645 Microphone**
+
+For more insights, check out the [Research Presentation](https://docs.google.com/presentation/d/1-e8CvU8t24MpcVqNmlJDZ_smbfroyqGtAjFgcp6NYI4/edit#slide=id.p).
 
 ---
 
@@ -31,24 +41,27 @@ For inquiries, collaboration opportunities, or further information, please reach
 ## 🖼️ Visuals
 
 ### Detecting Ultrasound
-<p>Examples of ultrasound detection with different equipment:</p>
-<div style="display: flex; justify-content: space-between;">
+Examples of ultrasound detection with different equipment:
+
+<div style="display: flex; justify-content: center; gap: 20px;">
   <img src="https://github.com/user-attachments/assets/e4bd9d66-4648-4f98-bec7-9e944db92f73" width="200" alt="Ultrasound Detection 1">
   <img src="https://github.com/user-attachments/assets/641fa745-2850-4515-a7fc-05422808147e" width="200" alt="Ultrasound Detection 2">
 </div>
 
 ### Audio Spectrogram
-<p>Visualizations of audio spectrograms from various recordings:</p>
-<div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/user-attachments/assets/1ec382d5-9cc3-4c99-9b09-54d6f74373e1" width="200" alt="Computer Mic Testing">
-  <img src="https://github.com/user-attachments/assets/f87a5ec7-f453-4d8d-8170-ecc50ce7a467" width="200" alt="SPH0645 Testing">
+Visualizations of audio spectrograms from various recordings:
+
+<div style="display: flex; justify-content: center; gap: 20px;">
+  <img src="https://github.com/user-attachments/assets/1ec382d5-9cc3-4c99-9b09-54d6f74373e1" width="200" alt="Computer Mic Testing" align = "center">
+  <img src="https://github.com/user-attachments/assets/f87a5ec7-f453-4d8d-8170-ecc50ce7a467" width="200" alt="SPH0645 Testing" align = "center">
 </div>
-<p><i>Left: Computer microphone testing</i></p>
-<p><i>Right: Testing with SPH0645 microphone</i></p>
+<p align="center"><i>Left: Computer microphone testing</i> &nbsp;&nbsp;|&nbsp;&nbsp; <i>Right: Testing with SPH0645 microphone</i></p>
 
-<img src = "https://github.com/user-attachments/assets/f0468de3-b715-4720-9d8f-b6c074c3050f" width = "200" align = "center">
-
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/f0468de3-b715-4720-9d8f-b6c074c3050f" width="200" alt="SPH0645 Microphone">
+</div>
 
 ---
 
-Thank you for visiting the repository! Your feedback and contributions are greatly appreciated. 😊
+<p align="center">Thank you for visiting the repository! Your feedback and contributions are greatly appreciated. 😊</p>
+

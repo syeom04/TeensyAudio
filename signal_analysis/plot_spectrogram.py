@@ -11,6 +11,7 @@ sample_rate, samples = wavfile.read(os.path.join(PATH, CURRENT_FILE))
 if len(samples.shape) == 2:
     samples = np.mean(samples, axis=1)
 
+sample_rate = 4410
 plt.figure(figsize=(10, 6))
 plt.specgram(samples, Fs=sample_rate, NFFT=1024, noverlap=512, cmap='viridis')
 plt.title('Spectrogram of {}'.format(CURRENT_FILE))

@@ -39,7 +39,7 @@ void setup() {
     sgtl5000_1.inputSelect(myInput);
     sgtl5000_1.volume(0.5);
 
-    setI2SFreq(48000);
+    // setI2SFreq(48000);
 
     // Now initialize the SD card
     SPI.setMOSI(SDCARD_MOSI_PIN);
